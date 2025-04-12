@@ -1,0 +1,139 @@
+/* Custom styles for Expense Tracker */
+
+/* General styles */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+footer {
+    margin-top: auto;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Category badge colors */
+.badge.bg-food {
+    background-color: var(--bs-success);
+}
+
+.badge.bg-transport {
+    background-color: var(--bs-info);
+}
+
+.badge.bg-bills {
+    background-color: var(--bs-danger);
+}
+
+.badge.bg-education {
+    background-color: var(--bs-primary);
+}
+
+.badge.bg-misc {
+    background-color: var(--bs-secondary);
+}
+
+/* Chart containers */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Stats cards */
+.stats-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.stats-card .card-body {
+    padding: 1.5rem;
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+/* Tips styling */
+.tip-card {
+    border-left: 4px solid var(--bs-warning);
+    background-color: rgba(255, 193, 7, 0.1);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.tip-icon {
+    background-color: var(--bs-warning);
+    color: var(--bs-dark);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+/* Auth pages */
+.auth-container {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--bs-secondary);
+}
+
+.auth-divider-text {
+    padding: 0 10px;
+    color: var(--bs-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-row {
+        flex-direction: column;
+    }
+    
+    .stats-card {
+        margin-bottom: 15px;
+    }
+    
+    .chart-container {
+        height: 250px;
+    }
+}
+
+/* Plotly chart style overrides */
+.js-plotly-plot .plotly .main-svg {
+    background: transparent !important;
+}
+
+.js-plotly-plot .plotly .bg {
+    fill: transparent !important;
+}

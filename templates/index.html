@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{% block title %}Expense Tracker - Log In{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-primary text-white">
+                <h3 class="text-center mb-0">
+                    <i class="fas fa-wallet me-2"></i>Expense Tracker
+                </h3>
+            </div>
+            <div class="card-body">
+                <div id="auth-error" class="alert alert-danger d-none"></div>
+                <div class="text-center mb-4">
+                    <h4>Welcome to Expense Tracker</h4>
+                    <p class="text-muted">Track your spending, visualize your finances, and save more</p>
+                </div>
+                
+                <div class="mb-4">
+                    <div class="d-grid gap-2">
+                        <!-- Direct Google OAuth Login -->
+                        <a href="/google_login/" class="btn btn-primary btn-lg">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google Logo">
+                            Sign in with Google
+                        </a>
+                        
+                        <!-- Email Login -->
+                        <button id="emailSignIn" class="btn btn-outline-info btn-lg">
+                            <i class="fas fa-envelope me-2"></i>Sign in with Email
+                        </button>
+                        
+                        <!-- Demo login for development -->
+                        <a href="/demo-login" class="btn btn-success btn-lg mt-3">
+                            <i class="fas fa-user-check me-2"></i>Demo Login (Development)
+                        </a>
+                    </div>
+                </div>
+                
+                <div id="emailSignInForm" class="d-none">
+                    <form id="email-login-form">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+
+                        <div class="mb-3">
+                            <a href="#" id="forgotPasswordLink" class="text-info">Forgot Password?</a>
+                        </div>
+
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Sign In</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+                    </div>
+                </div>
+                
+                <div id="registerForm" class="d-none">
+                    <form id="email-register-form">
+                        <div class="mb-3">
+                            <label for="register-email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="register-email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="register-password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="register-password" placeholder="Create a password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm-password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm-password" placeholder="Confirm your password" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">Register</button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p>Already have an account? <a href="#" id="loginLink">Sign In</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center py-3">
+                <div class="text-muted small">Secure authentication powered by Google OAuth</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card h-100 bg-dark">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-pie fa-3x text-info mb-3"></i>
+                <h5 class="card-title">Track Expenses</h5>
+                <p class="card-text">Easily log your daily spending in multiple categories.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 bg-dark">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                <h5 class="card-title">Visual Insights</h5>
+                <p class="card-text">See where your money goes with intuitive charts and graphs.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 bg-dark">
+            <div class="card-body text-center">
+                <i class="fas fa-lightbulb fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">Smart Tips</h5>
+                <p class="card-text">Get personalized saving tips based on your spending habits.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

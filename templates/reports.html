@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Expense Tracker - Reports{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <h1 class="mb-4">
+            <i class="fas fa-chart-pie me-2"></i>Financial Reports
+        </h1>
+    </div>
+    <div class="col-md-4 text-md-end">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-download me-1"></i>Export
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('export_expenses', format='csv') }}">Export to CSV</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('export_expenses', format='json') }}">Export to JSON</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Time Period Selection -->
+<div class="card mb-4">
+    <div class="card-body p-2">
+        <div class="btn-group w-100" role="group" aria-label="Time period selection">
+            <a href="{{ url_for('reports', period='week') }}" class="btn btn-outline-primary {% if period == 'week' %}active{% endif %}">Weekly</a>
+            <a href="{{ url_for('reports', period='month') }}" class="btn btn-outline-primary {% if period == 'month' %}active{% endif %}">Monthly</a>
+            <a href="{{ url_for('reports', period='year') }}" class="btn btn-outline-primary {% if period == 'year' %}active{% endif %}">Yearly</a>
+        </div>
+    </div>
+</div>
+
+{% if error %}
+<div class="alert alert-danger">
+    <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+</div>
+{% else %}
+
+<div class="row">
+    <!-- Stats Summary -->
+    {% if stats is defined and stats %}
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold mb-1">Total Spent</h6>
+                <h2 class="mb-0">${{ '%.2f'|format(stats.total) }}</h2>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold mb-1">Average Daily</h6>
+                <h2 class="mb-0">${{ '%.2f'|format(stats.average_daily) }}</h2>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card bg-warning text-dark h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold mb-1">Highest Expense</h6>
+                <h2 class="mb-0">${{ '%.2f'|format(stats.largest_expense) }}</h2>
+                <small>{{ stats.top_category }}</small>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card bg-info text-dark h-100">
+            <div class="card-body">
+                <h6 class="text-uppercase fw-bold mb-1">Top Category</h6>
+                {% if stats.categories %}
+                <h2 class="mb-0">{{ stats.categories[0].name }}</h2>
+                <small>${{ '%.2f'|format(stats.categories[0].amount) }}</small>
+                {% else %}
+                <h2 class="mb-0">N/A</h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 mb-4">
+        <div class="card bg-dark h-100">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                <h4>No Expense Data Available</h4>
+                <p class="mb-3">No expenses found for this time period.</p>
+                <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-1"></i>Add an Expense
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row">
+    <!-- Category Chart -->
+    <div class="col-12 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Spending by Category</h5>
+            </div>
+            <div class="card-body">
+                {% if category_chart %}
+                <div id="categoryChart" style="height: 500px;"></div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+                    <p>No expense data available for the selected period.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Category Breakdown -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-dark">
+                <h5 class="mb-0">Category Breakdown</h5>
+            </div>
+            <div class="card-body p-0">
+                {% if stats is defined and stats and stats.categories %}
+                <div class="list-group list-group-flush">
+                    {% for category in stats.categories %}
+                    <div class="list-group-item bg-dark d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge 
+                            {% if category.name == 'Food' %}bg-success
+                            {% elif category.name == 'Transport' %}bg-info
+                            {% elif category.name == 'Bills' %}bg-danger
+                            {% elif category.name == 'Education' %}bg-primary
+                            {% else %}bg-secondary{% endif %} me-2">
+                                {{ category.name }}
+                            </span>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="mb-0 me-3">${{ '%.2f'|format(category.amount) }}</h5>
+                            <div class="text-muted small">
+                                {{ ((category.amount / stats.total) * 100) | round(1) }}%
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <p>No expense data available for the selected period.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Saving Tips -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>Saving Tips
+                </h5>
+            </div>
+            <div class="card-body">
+                {% if tips is defined and tips %}
+                <ul class="list-group list-group-flush">
+                    {% for tip in tips %}
+                    <li class="list-group-item bg-dark">
+                        <div class="d-flex">
+                            <div class="me-3">
+                                <div class="bg-warning p-2 rounded-circle text-dark">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                            </div>
+                            <div>
+                                {{ tip }}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center py-4">
+                    <p>Add more expenses to get personalized saving tips.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if category_chart %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryChartData = {{ category_chart|safe }};
+        Plotly.newPlot('categoryChart', JSON.parse(categoryChartData).data, JSON.parse(categoryChartData).layout);
+    });
+</script>
+{% endif %}
+
+{% if trend_chart %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const trendChartData = {{ trend_chart|safe }};
+        Plotly.newPlot('trendChart', JSON.parse(trendChartData).data, JSON.parse(trendChartData).layout);
+    });
+</script>
+{% endif %}
+{% endblock %}
